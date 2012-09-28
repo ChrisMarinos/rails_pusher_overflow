@@ -13,8 +13,8 @@ class Overflow.Views.QuestionView extends Backbone.View
       <div class="votedown <%=voteDownClass%>">&nbsp;</div>
     </div>
     <div class=questionText>
-      <p><%- text %></p>
-      <div class="questionAuthor">From: <%- userName %></div>
+      <p><%- content %></p>
+      <div class="questionAuthor">From: <%- author %></div>
     </div>
     ''')
   
@@ -37,13 +37,13 @@ class Overflow.Views.QuestionView extends Backbone.View
   downVote: =>
     @setVote('down')
 
-  setVote: (voteType) =>
-    userName = currentUser.get('userName')
+  setVote: (voterType) =>
+    author = Overflow.currentUser.get('author')
     questionId = @model.id
-    vote = {voteType: voteType, questionId: questionId, userName: userName}
+    vote = {voterType: voterType, questionId: questionId, author: author}
 
     votes = @model.get('votes')
     votes.push vote
     @model.set {votes: votes}, {silent:true}
     @render()
-    Backbone.socket.emit('vote:add',vote)
+    #Backbone.socket.emit('vote:add',vote)

@@ -1,3 +1,3 @@
 class Vote < ActiveRecord::Base
-  has_many :votes
+  belongs_to :question
 end

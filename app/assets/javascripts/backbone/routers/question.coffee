@@ -1,12 +1,11 @@
 class Overflow.Routers.QuestionRouter extends Backbone.Router
 	initialize: (options) =>
 		Overflow.currentUser = new Overflow.Models.User
-		@userInputView = new Overflow.Views.UserInput({model: Overflow.currentUser})
+		@userInputView = new Overflow.Views.UserInput({model: Overflow.currentUser, el: $('#newQuestions')})
 		@userInputView.render()
 		Overflow.questions = new Overflow.Collections.QuestionList()
-		@questionListView = new Overflow.Views.QuestionListView()
+		@questionListView = new Overflow.Views.QuestionListView(el: $('#questions'))
 
-Overflow.router = new Overflow.Routers.QuestionRouter()
 
 #Backbone.socket.on "questions:updated", (data) ->
     #question = Overflow.Questions.get(data.id)

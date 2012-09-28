@@ -1,10 +1,8 @@
 class Overflow.Views.QuestionListView extends Backbone.View
-  constructor: ->
+  initialize: ->
     Overflow.questions.bind 'reset', @render
     Overflow.questions.bind 'add', @renderItem
     Overflow.questions.fetch()
-  
-  el: $('#questions')
   
   render: =>
     $(@el).html("")

@@ -2,13 +2,11 @@ class Overflow.Views.UserInput extends Backbone.View
 	initialize: (options) =>
 		@model.bind("change", @render)
 
-	el: $('#newQuestions')
-
-	loggedInTemplate: _.template('''<label for="newQuestion" id="questionPrompt"><%- userName %> wants to know...</label>
+	loggedInTemplate: _.template('''<label for="newQuestion" id="questionPrompt"><%- author %> wants to know...</label>
 		<textarea cols=20 rows=2 id="newQuestion" name="newQuestion"></textarea>
 		<a id='addItem'>Ask now!</a>''')
 
-	loggedOutTemplate: _.template('''<label id="logInPrompt">Your name:</label><input id="userName" type=text/><a id="logIn">That's me!</a>''')
+	loggedOutTemplate: _.template('''<label id="logInPrompt">Your name:</label><input id="author" type=text/><a id="logIn">That's me!</a>''')
 
 	events:
 		"click #logIn" : "login"
@@ -20,15 +18,15 @@ class Overflow.Views.UserInput extends Backbone.View
 		textArea.val("")
 
 		question =
-			text: questionText
-			userName: @model.get('userName')
+			content: questionText
+			author: @model.get('author')
 			votes: []
 
 		Overflow.questions.create(question)
 
 	login: =>
-		userName = $('#userName').val()
-		@model.set({userName: userName})
+		author = $('#author').val()
+		@model.set({author: author})
 
 	render: =>
 		if @model.isLoggedIn()
@@ -37,13 +35,3 @@ class Overflow.Views.UserInput extends Backbone.View
 			activeTemplate = @loggedOutTemplate
 		@el.html( activeTemplate( @model.toJSON() ) )
 		this
-
-
-
-
-
-
-
-
-
-

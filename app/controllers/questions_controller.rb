@@ -6,7 +6,7 @@ class QuestionsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @questions }
+      format.json { render :json => @questions.to_json(:include => :votes) }
     end
   end
 

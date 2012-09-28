@@ -1,9 +1,9 @@
 class Overflow.Models.Question extends Backbone.Model
-	didUserVote: (currentUser,voteType) =>
-		userName = currentUser.get('userName')
+	didUserVote: (currentUser,voterType) =>
+		author = currentUser.get('author')
 		votes = @get('votes')
 		_(votes).any (vote)=>
-			vote.userName == userName and vote.voteType == voteType 
+			vote.author == author and vote.voterType == voterType
 
 	didUserVoteUp: (currentUser) =>
 		@didUserVote currentUser, 'up'
@@ -13,10 +13,10 @@ class Overflow.Models.Question extends Backbone.Model
 
 	voteTally: =>
 		votes = @get('votes')
-		voteBreakdown = _(votes).reduce( @voteIncrement, {up:0, down:0} ) 
+		voteBreakdown = _(votes).reduce( @voteIncrement, {up:0, down:0} )
 		return voteBreakdown.up - voteBreakdown.down
 
 	voteIncrement: (tally,vote) ->
-		upIncrement = if vote.voteType == 'up' then 1 else 0
-		downIncrement = if vote.voteType == 'down' then 1 else 0
+		upIncrement = if vote.voterType == 'up' then 1 else 0
+		downIncrement = if vote.voterType == 'down' then 1 else 0
 		{up: tally.up + upIncrement, down: tally.down + downIncrement}

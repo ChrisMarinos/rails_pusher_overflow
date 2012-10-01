@@ -1,22 +1,25 @@
 class Overflow.Models.Question extends Backbone.Model
-	didUserVote: (currentUser,voterType) =>
-		author = currentUser.get('author')
-		votes = @get('votes')
-		_(votes).any (vote)=>
-			vote.author == author and vote.voterType == voterType
+    paramRoot: 'question'
 
-	didUserVoteUp: (currentUser) =>
-		@didUserVote currentUser, 'up'
+    initialize: (attributes) =>
+        @set votes: new Overflow.Collections.Votes(attributes.votes, {id: attributes.id})
 
-	didUserVoteDown: (currentUser) =>
-		@didUserVote currentUser,'down'
+    getExistingVote: (author) =>
+        @get('votes').find (vote) => vote.get('voter') == author
 
-	voteTally: =>
-		votes = @get('votes')
-		voteBreakdown = _(votes).reduce( @voteIncrement, {up:0, down:0} )
-		return voteBreakdown.up - voteBreakdown.down
+    didUserVoteUp: (currentUser) =>
+        vote = @getExistingVote(currentUser)
+        vote.voterType == 'up' if vote
 
-	voteIncrement: (tally,vote) ->
-		upIncrement = if vote.voterType == 'up' then 1 else 0
-		downIncrement = if vote.voterType == 'down' then 1 else 0
-		{up: tally.up + upIncrement, down: tally.down + downIncrement}
+    didUserVoteDown: (currentUser) =>
+        vote = @getExistingVote(currentUser)
+        vote.voterType == 'down' if vote
+
+    voteTally: =>
+        voteBreakdown = @get('votes').reduce( @voteIncrement, {up:0, down:0} )
+        return voteBreakdown.up - voteBreakdown.down
+
+    voteIncrement: (tally,vote) ->
+        upIncrement = if vote.get('voter_type') == 'up' then 1 else 0
+        downIncrement = if vote.get('voter_type') == 'down' then 1 else 0
+        {up: tally.up + upIncrement, down: tally.down + downIncrement}

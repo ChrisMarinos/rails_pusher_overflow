@@ -1,6 +1,9 @@
 class Overflow.Views.QuestionView extends Backbone.View
   initialize: (options) =>
     @model.bind("change", @render)
+    @model.get('votes').bind("change", @render)
+    @model.get('votes').bind("add", @render)
+    @model.get('votes').bind("remove", @render)
 
   tagName: "li"
  
@@ -23,11 +26,14 @@ class Overflow.Views.QuestionView extends Backbone.View
     "click .votedown" : 'downVote'
 
   render: =>
-    vote = @model.toJSON()
-    vote.voteUpClass = if @model.didUserVoteUp Overflow.currentUser then "votedup" else ""
-    vote.voteDownClass = if @model.didUserVoteDown Overflow.currentUser then "voteddown" else ""
-    vote.tally = @model.voteTally()
-    newContent = @template(vote)
+    author = Overflow.currentUser.author
+    voteInfo = {}
+    voteInfo.voteUpClass = if @model.didUserVoteUp author then "votedup" else ""
+    voteInfo.voteDownClass = if @model.didUserVoteDown author then "voteddown" else ""
+    voteInfo.tally = @model.voteTally()
+    voteInfo.content = @model.get('content')
+    voteInfo.author = @model.get('author')
+    newContent = @template(voteInfo)
     $(@el).html(newContent)
     return this
 
@@ -40,10 +46,15 @@ class Overflow.Views.QuestionView extends Backbone.View
   setVote: (voterType) =>
     author = Overflow.currentUser.get('author')
     questionId = @model.id
-    vote = {voterType: voterType, questionId: questionId, author: author}
 
-    votes = @model.get('votes')
-    votes.push vote
-    @model.set {votes: votes}, {silent:true}
-    @render()
-    #Backbone.socket.emit('vote:add',vote)
+    vote = @model.getExistingVote author
+
+    if vote
+        unless vote.get('voter_type') == voterType
+            vote.set(voter_type: voterType)
+            vote.save()
+    else
+        @model.get('votes').create
+            voter_type: voterType,
+            question_id: questionId,
+            voter: author

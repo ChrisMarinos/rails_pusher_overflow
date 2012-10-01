@@ -1,1 +1,1 @@
-Rails/pusher/heroku version of [Dennis Burton's](https://github.com/dennisburton/) [node-overflow](https://github.com/dennisburton/nodeoverflow-azure) and [signalR overflow](https://github.com/dennisburton/signalRoverflow)
+Rails/backbone/pusher/heroku version of [Dennis Burton's](https://github.com/dennisburton/) [node-overflow](https://github.com/dennisburton/nodeoverflow-azure) and [signalR overflow](https://github.com/dennisburton/signalRoverflow)

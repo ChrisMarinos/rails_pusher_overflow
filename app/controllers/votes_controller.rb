@@ -44,6 +44,7 @@ class VotesController < ApplicationController
 
     respond_to do |format|
       if @vote.save
+        Pusher["VOTES_CHANNEL_#{@vote.question_id}"].trigger('created', @vote.attributes, request.headers["X-Pusher-Socket-ID"])
         format.html { redirect_to @vote, notice: 'Vote was successfully created.' }
         format.json { render json: @vote, status: :created, location: @vote }
       else
@@ -60,6 +61,7 @@ class VotesController < ApplicationController
 
     respond_to do |format|
       if @vote.update_attributes(params[:vote])
+        Pusher["VOTES_CHANNEL_#{@vote.question_id}"].trigger('updated', @vote.attributes, request.headers["X-Pusher-Socket-ID"])
         format.html { redirect_to @vote, notice: 'Vote was successfully updated.' }
         format.json { head :no_content }
       else
@@ -73,7 +75,9 @@ class VotesController < ApplicationController
   # DELETE /votes/1.json
   def destroy
     @vote = Vote.find(params[:id])
+    question_id = @vote.question_id
     @vote.destroy
+    Pusher["VOTES_CHANNEL_#{question_id}"].trigger('destroyed', {:id => params[:id]}, request.headers["X-Pusher-Socket-ID"])
 
     respond_to do |format|
       format.html { redirect_to votes_url }

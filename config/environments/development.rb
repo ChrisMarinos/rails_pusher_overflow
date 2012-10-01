@@ -34,4 +34,12 @@ RailsPusherOverflow::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  #pusher settings
+  require 'pusher'
+
+  Pusher.app_id = 28593
+  Pusher.key = '231696295d2ac603cad4'
+  Pusher.secret = '613283c25f7f8afafc48'
+
 end

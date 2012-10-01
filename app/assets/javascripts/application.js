@@ -17,4 +17,5 @@
 //= require backbone_rails_sync
 //= require backbone_datalink
 //= require backbone/rails_pusher_overflow
+//= require ../../../vendor/assets/javascripts/vendor
 //= require_tree .

@@ -44,6 +44,7 @@ class QuestionsController < ApplicationController
 
     respond_to do |format|
       if @question.save
+        Pusher['QUESTIONS_CHANNEL'].trigger('created', @question.attributes, request.headers["X-Pusher-Socket-ID"])
         format.html { redirect_to @question, notice: 'Question was successfully created.' }
         format.json { render json: @question, status: :created, location: @question }
       else
@@ -60,6 +61,7 @@ class QuestionsController < ApplicationController
 
     respond_to do |format|
       if @question.update_attributes(params[:question])
+        Pusher['QUESTIONS_CHANNEL'].trigger('updated', @question.attributes, request.headers["X-Pusher-Socket-ID"])
         format.html { redirect_to @question, notice: 'Question was successfully updated.' }
         format.json { head :no_content }
       else
@@ -74,6 +76,7 @@ class QuestionsController < ApplicationController
   def destroy
     @question = Question.find(params[:id])
     @question.destroy
+    Pusher['QUESTIONS_CHANNEL'].trigger('destroyed', {:id => params[:id]}, request.headers["X-Pusher-Socket-ID"])
 
     respond_to do |format|
       format.html { redirect_to questions_url }
